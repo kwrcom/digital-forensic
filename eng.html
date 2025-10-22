@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Forensics Report - P2P Data Leakage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header h2 {
+            font-size: 18px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .report-content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+        }
+
+        .subsection-title {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .evidence-box {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+        }
+
+        .critical {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .important {
+            color: #e67e22;
+            font-weight: bold;
+        }
+
+        .normal {
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .timeline {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .timeline-event {
+            margin: 12px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .timeline-event:before {
+            content: "•";
+            color: #e74c3c;
+            font-size: 24px;
+            position: absolute;
+            left: 0;
+            top: -5px;
+        }
+
+        .conclusion-box {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .recommendation-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 11px;
+            border-top: 1px solid #bdc3c7;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .tool-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+        }
+
+        .tool-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .tool-purpose {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                margin: 0;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DIGITAL FORENSICS INVESTIGATION REPORT</h1>
+            <h2>P2P Data Leakage Incident - Case #DF-2021-027</h2>
+        </div>
+
+        <div class="report-content">
+            <!-- Executive Summary -->
+            <div class="section">
+                <h2 class="section-title">1. EXECUTIVE SUMMARY</h2>
+                <p>This investigation uncovered systematic violations of information security policies by user <strong>Kamryn</strong>, involving unauthorized P2P file sharing and distribution of confidential materials.</p>
+                
+                <div class="conclusion-box">
+                    <h3>Key Findings:</h3>
+                    <ul>
+                        <li>Unauthorized installation and use of uTorrent P2P client</li>
+                        <li>Downloading of pre-release confidential media files</li>
+                        <li>Distribution of confidential files via email to external recipients</li>
+                        <li>Active period: March 21-27, 2021</li>
+                        <li>Direct evidence of intellectual property theft</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Investigation Methodology -->
+            <div class="section">
+                <h2 class="section-title">2. INVESTIGATION METHODOLOGY</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">2.1. Tools and Techniques</h3>
+                    <div class="tool-grid">
+                        <div class="tool-item">
+                            <div class="tool-name">RegRipper</div>
+                            <div class="tool-purpose">Windows Registry Analysis</div>
+                        </div>
+                        <div class="tool-item">
+                            <div class="tool-name">TSK Tools (fls, icat)</div>
+                            <div class="tool-purpose">File System Analysis</div>
+                        </div>
+                        <div class="tool-item">
+                            <div class="tool-name">analyzeMFT</div>
+                            <div class="tool-purpose">MFT Parsing</div>
+                        </div>
+                        <div class="tool-item">
+                            <div class="tool-name">USN Journal Tools</div>
+                            <div class="tool-purpose">Change Tracking Analysis</div>
+                        </div>
+                        <div class="tool-item">
+                            <div class="tool-name">SQLite3</div>
+                            <div class="tool-purpose">Browser History Analysis</div>
+                        </div>
+                        <div class="tool-item">
+                            <div class="tool-name">ExifTool</div>
+                            <div class="tool-purpose">Metadata Extraction</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">2.2. Evidence Sources</h3>
+                    <table>
+                        <tr>
+                            <th>Evidence Type</th>
+                            <th>Source</th>
+                            <th>Hash Verification</th>
+                        </tr>
+                        <tr>
+                            <td>Disk Image</td>
+                            <td>Disk_Image_ID-20210327.001</td>
+                            <td>MD5: 0adf1f182aab391d7042133bb55cf832</td>
+                        </tr>
+                        <tr>
+                            <td>Memory Dump</td>
+                            <td>Memory_Dump_ID-20210327.raw</td>
+                            <td>MD5: eb74id12f54f57d4c1d5962bebb5771</td>
+                        </tr>
+                        <tr>
+                            <td>Registry Hives</td>
+                            <td>SAM, SECURITY, SOFTWARE, SYSTEM, NTUSER.DAT</td>
+                            <td>Exported from mounted image</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- System Information -->
+            <div class="section">
+                <h2 class="section-title">3. SYSTEM INFORMATION</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">3.1. System Configuration</h3>
+                    <div class="evidence-box">
+                        ProductName: Windows 10 Home<br>
+                        RegisteredOwner: Kamryn<br>
+                        ComputerName: DESKTOP-E4SUNT2<br>
+                        TimeZone: Pacific Standard Time (UTC-8/-7)<br>
+                        InstallDate: 2021-03-10 00:04:29Z<br>
+                        BuildLab: 19041.vb_release.191206-1406
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">3.2. User Accounts</h3>
+                    <div class="evidence-box">
+                        Username: Kamryn [1002]<br>
+                        Account Created: Wed Mar 10 00:13:56 2021 Z<br>
+                        Last Login Date: Sun Mar 21 20:04:35 2021 Z<br>
+                        LastLoggedOnUser: .\Kamryn<br>
+                        Pwd Fail Date: Wed Mar 10 00:21:18 2021 Z
+                    </div>
+                </div>
+            </div>
+
+            <!-- P2P Activity Evidence -->
+            <div class="section">
+                <h2 class="section-title">4. P2P ACTIVITY EVIDENCE</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">4.1. uTorrent Installation</h3>
+                    <div class="evidence-box">
+                        Uninstall key detected:<br>
+                        2021-03-21 20:39:08Z - uTorrent v.3.5.5.45852<br><br>
+                        
+                        Program Files Found:<br>
+                        r/r 205772-128-3: Users/Kamryn/AppData/Roaming/uTorrent/uTorrent.exe<br>
+                        r/r 97182-128-4: Users/Kamryn/Desktop/uTorrent.exe<br>
+                        r/r 97182-128-7: Users/Kamryn/Desktop/uTorrent.exe:SmartScreen
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.2. Torrent Files</h3>
+                    <table>
+                        <tr>
+                            <th>Torrent File</th>
+                            <th>Location</th>
+                            <th>MD5 Hash</th>
+                            <th>Associated Content</th>
+                        </tr>
+                        <tr>
+                            <td>Contraband.mp3.torrent</td>
+                            <td>AppData/Roaming/uTorrent<br>Downloads/Torrents</td>
+                            <td>f140d5444122472342222953450e36d</td>
+                            <td>Contraband.mp3</td>
+                        </tr>
+                        <tr>
+                            <td>Sample-1.mp3.torrent</td>
+                            <td>AppData/Roaming/uTorrent<br>Downloads/Torrents</td>
+                            <td>8ac86f7a2151250bc4033fde9e23456f</td>
+                            <td>Sample-1.mp3</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.3. Download Session Data</h3>
+                    <div class="evidence-box">
+                        Resume files found:<br>
+                        r/r 85683-128-4: Users/Kamryn/AppData/Roaming/uTorrent/resume.dat<br>
+                        r/r 88459-128-4: Users/Kamryn/AppData/Roaming/uTorrent/resume.dat.old<br>
+                        (Multiple backup copies detected)
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- Target Media Files -->
+            <div class="section">
+                <h2 class="section-title">5. TARGET MEDIA FILES ANALYSIS</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">5.1. Sample-1.mp3 - Confidential Pre-release</h3>
+                    <div class="evidence-box">
+                        <span class="critical">METADATA ANALYSIS:</span><br>
+                        Title: New_Movie_Sample-1<br>
+                        Publisher: Beat Step<br>
+                        Year: 2021<br>
+                        Comment: Sample to be presented at upcoming meeting<br>
+                        Duration: 3.77 s (approx)<br>
+                        Encoder: LAME3.97<br><br>
+                        
+                        <span class="critical">FILE LOCATIONS:</span><br>
+                        C:\Users\Kamryn\Downloads\Sample-1.mp3<br>
+                        C:\Users\Kamryn\Downloads\Torrent-Sources\Sample-1.mp3<br><br>
+                        
+                        <span class="critical">HASH VERIFICATION:</span><br>
+                        MD5: b387e8334b3db03d604cfa14511f6913 (MATCHED REFERENCE)
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">5.2. Contraband.mp3 - Suspected Illegal Content</h3>
+                    <div class="evidence-box">
+                        <span class="important">METADATA ANALYSIS:</span><br>
+                        File name indicates illegal nature ("Contraband")<br>
+                        Duration: 1.85 s (approx)<br>
+                        Encoder: LAME3.97<br><br>
+                        
+                        <span class="important">FILE LOCATIONS:</span><br>
+                        C:\Users\Kamryn\Downloads\Torrent-Sources\Contraband.mp3<br><br>
+                        
+                        <span class="important">HASH VERIFICATION:</span><br>
+                        MD5: f9d82438ed446e43cbd06adf7dbc875b (MATCHED REFERENCE)
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Activity Analysis -->
+            <div class="section">
+                <h2 class="section-title">6. USER ACTIVITY ANALYSIS</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">6.1. Recent Documents Evidence</h3>
+                    <div class="evidence-box">
+                        RecentDocs Key LastWrite: 2021-03-27 14:25:45Z<br><br>
+                        
+                        Files in MRU order:<br>
+                        19 = Contraband.mp3<br>
+                        18 = ID-20210327.raw<br>
+                        17 = Contraband.mp3.torrent<br>
+                        14 = ID-20210321.raw<br>
+                        12 = Sample-1.mp3.torrent<br>
+                        10 = Sample-1.mp3<br>
+                        8 = List-2.txt<br>
+                        7 = List-1.txt<br>
+                        9 = List-3.txt
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">6.2. Event Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-event">
+                            <strong>2021-03-10 00:13:56</strong> - User account Kamryn created
+                        </div>
+                        <div class="timeline-event">
+                            <strong>2021-03-21 20:25:45</strong> - List-1.txt, List-2.txt created (tracker lists)
+                        </div>
+                        <div class="timeline-event">
+                            <strong>2021-03-21 20:39:08</strong> - uTorrent v.3.5.5.45852 installed
+                        </div>
+                        <div class="timeline-event">
+                            <strong>2021-03-21 20:40:15</strong> - Sample-1.mp3 first appears in system
+                        </div>
+                        <div class="timeline-event">
+                            <strong>2021-03-27 14:10:00</strong> - Contraband.mp3.torrent activity begins
+                        </div>
+                        <div class="timeline-event">
+                            <strong>2021-03-27 14:13:44</strong> - Contraband.mp3 file created
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-break"></div>
+
+            <!-- Email Evidence -->
+            <div class="section">
+                <h2 class="section-title">7. EMAIL COMMUNICATION EVIDENCE</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">7.1. Incoming Email - Confidential File Transfer</h3>
+                    <div class="evidence-box">
+                        <span class="critical">INCOMING MESSAGE:</span><br>
+                        From: willis.gibbs@outlook.com<br>
+                        To: camille123@outlook.com<br>
+                        Date: Sun, 21 Mar 2021 19:22:40<br>
+                        Subject: Try this one!<br><br>
+                        
+                        <span class="critical">MESSAGE BODY:</span><br>
+                        "Like we discussed at work, here's a copy of the music file we're going to present 
+                        to the people at Tuesday's meeting. They really did a good job with this one, 
+                        so I'm hoping they go with us!"<br><br>
+                        
+                        <span class="critical">ATTACHMENT:</span> Sample-1.mp3 (80 KB)
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">7.2. Outgoing Communications</h3>
+                    <div class="evidence-box">
+                        Outgoing messages from Kamryn detected:<br>
+                        - Re: Try this one!<br>
+                        - Re: Here's Another One<br>
+                        - Check these files out!<br><br>
+                        
+                        Confirms active participation in file sharing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Activity -->
+            <div class="section">
+                <h2 class="section-title">8. WEB BROWSING ACTIVITY</h2>
+                
+                <div class="subsection">
+                    <h3 class="subsection-title">8.1. Browser Downloads (Edge)</h3>
+                    <div class="evidence-box">
+                        Downloads detected in browser history:<br>
+                        - Thunderbird Setup 78.8.1.exe<br>
+                        - uTorrent.exe<br>
+                        - Torrent files from various trackers<br>
+                        - wallpaperflare.com_wallpaper.jpg
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">8.2. Tracker Lists</h3>
+                    <div class="evidence-box">
+                        List files containing tracker URLs:<br>
+                        udp://208.83.20.20:6969/announce<br>
+                        udp://191.216.110.52:451/announce<br>
+                        udp://5.206.31.154:6969/announce<br>
+                        udp://163.172.170.127:6869/announce<br>
+                        ... and multiple others
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conclusions and Recommendations -->
+            <div class="section">
+                <h2 class="section-title">9. CONCLUSIONS AND RECOMMENDATIONS</h2>
+                
+                <div class="conclusion-box">
+                    <h3>9.1. Investigation Conclusions</h3>
+                    <p><span class="critical">CRITICAL FINDING:</span> User Kamryn engaged in unauthorized P2P file sharing and distribution of confidential materials, resulting in intellectual property theft.</p>
+                    
+                    <p><span class="important">ESTABLISHED FACTS:</span></p>
+                    <ul>
+                        <li>Unauthorized installation and use of uTorrent P2P client</li>
+                        <li>Downloading of pre-release confidential content (Sample-1.mp3)</li>
+                        <li>Distribution of confidential files to external email recipients</li>
+                        <li>Systematic search for torrent trackers and additional content</li>
+                        <li>Attempted concealment of activity (files in AppData, backup copies)</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation-box">
+                    <h3>9.2. Recommended Actions</h3>
+                    <ol>
+                        <li><strong>Immediate Response:</strong> Disable user account, secure equipment</li>
+                        <li><strong>Technical Controls:</strong> Block P2P traffic at firewall, implement DLP system</li>
+                        <li><strong>Policy Enforcement:</strong> Review and reinforce information security policies</li>
+                        <li><strong>Employee Training:</strong> Conduct security awareness training</li>
+                        <li><strong>Legal Consultation:</strong> Assess potential legal consequences of data leakage</li>
+                        <li><strong>Enhanced Monitoring:</strong> Implement network activity monitoring for similar incidents</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Digital Forensics Laboratory<br>
+            Berdibaev Korkem
+        </div>
+    </div>
+</body>
+</html>

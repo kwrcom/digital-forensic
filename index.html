@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Отчет по цифровой форензике - P2P утечка</title>
+<style>
+body {
+    font-family: 'Calibri', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #2c3e50;
+}
+
+.header {
+    background: #2c3e50;
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-bottom: 5px solid #3498db;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.header h2 {
+    margin: 10px 0 0 0;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.content {
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 20mm;
+}
+
+.section {
+    margin-bottom: 30px;
+    page-break-inside: avoid;
+}
+
+.section h3 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.subsection {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.subsection h4 {
+    color: #34495e;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.evidence-box {
+    background: #f8f9fa;
+    border-left: 4px solid #3498db;
+    padding: 15px;
+    margin: 10px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    border-radius: 0 5px 5px 0;
+}
+
+.timeline {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.timeline-event {
+    margin: 10px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.timeline-event:before {
+    content: "•";
+    color: #e74c3c;
+    font-size: 20px;
+    position: absolute;
+    left: 0;
+    top: -5px;
+}
+
+.conclusion-box {
+    background: #e8f5e8;
+    border: 2px solid #27ae60;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.finding-critical {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.finding-important {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+.finding-normal {
+    color: #3498db;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 12px;
+}
+
+th, td {
+    border: 1px solid #bdc3c7;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #34495e;
+    color: white;
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #7f8c8d;
+    font-size: 11px;
+    border-top: 1px solid #bdc3c7;
+    padding-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>ОТЧЕТ ПО ЦИФРОВОЙ ФОРЕНЗИКЕ</h1>
+    <h2>Расследование инцидента P2P-утечки конфиденциальных данных</h2>
+</div>
+
+<div class="content">
+
+<div class="section">
+    <h3>1. РЕЗЮМЕ РАССЛЕДОВАНИЯ</h3>
+    <p>Расследование выявило систематическое нарушение политик информационной безопасности пользователем <strong>Kamryn</strong>. Установлены факты несанкционированной загрузки и распространения конфиденциальных материалов через P2P-сети и электронную почту.</p>
+    
+    <div class="conclusion-box">
+        <h4>Ключевые выводы:</h4>
+        <ul>
+            <li>Установлен и активно использовался P2P-клиент uTorrent</li>
+            <li>Обнаружены предрелизные музыкальные файлы с метаданными, указывающими на конфиденциальность</li>
+            <li>Подтверждена утечка файлов через электронную почту внешнему адресату</li>
+            <li>Период активных действий: 21-27 марта 2021 года</li>
+        </ul>
+    </div>
+</div>
+
+<div class="section">
+    <h3>2. МЕТОДОЛОГИЯ ИССЛЕДОВАНИЯ</h3>
+    
+    <div class="subsection">
+        <h4>2.1. Использованные инструменты</h4>
+        <table>
+            <tr>
+                <th>Инструмент</th>
+                <th>Назначение</th>
+                <th>Версия/Настройки</th>
+            </tr>
+            <tr>
+                <td>RegRipper (rip.pl)</td>
+                <td>Анализ реестра Windows</td>
+                <td>Плагины: timezone, winver, compname, samparse, lastloggedon, shutdown, recentdocs, uninstall</td>
+            </tr>
+            <tr>
+                <td>TSK Tools (fls, icat)</td>
+                <td>Анализ файловой системы</td>
+                <td>Смещение: 104448 секторов</td>
+            </tr>
+            <tr>
+                <td>analyzeMFT</td>
+                <td>Парсинг MFT</td>
+                <td>Python скрипт</td>
+            </tr>
+            <tr>
+                <td>usncarve.py, usn.py</td>
+                <td>Анализ USN журнала</td>
+                <td>Внутренние утилиты</td>
+            </tr>
+            <tr>
+                <td>SQLite3</td>
+                <td>Анализ истории браузера</td>
+                <td>База данных History</td>
+            </tr>
+            <tr>
+                <td>ExifTool</td>
+                <td>Извлечение метаданных</td>
+                <td>Версия 13.25</td>
+            </tr>
+            <tr>
+                <td>md5deep, md5sum</td>
+                <td>Верификация хэшей</td>
+                <td>Сравнение с hash_reference.txt</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+    <h3>3. СИСТЕМНАЯ ИНФОРМАЦИЯ</h3>
+    
+    <div class="subsection">
+        <h4>3.1. Основные параметры системы</h4>
+        <div class="evidence-box">
+            ProductName: Windows 10 Home<br>
+            RegisteredOwner: Kamryn<br>
+            ComputerName: DESKTOP-E4SUNT2<br>
+            TimeZone: Pacific Standard Time (UTC-8/-7)<br>
+            InstallDate: 2021-03-10 00:04:29Z<br>
+            BuildLab: 19041.vb_release.191206-1406
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>3.2. Учетные записи пользователей</h4>
+        <div class="evidence-box">
+            Username: Kamryn [1002]<br>
+            Account Created: Wed Mar 10 00:13:56 2021 Z<br>
+            Last Login Date: Sun Mar 21 20:04:35 2021 Z<br>
+            LastLoggedOnUser: .\Kamryn
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>4. ДОКАЗАТЕЛЬСТВА P2P-АКТИВНОСТИ</h3>
+    
+    <div class="subsection">
+        <h4>4.1. Установленное ПО - uTorrent</h4>
+        <div class="evidence-box">
+            Uninstall key detected:<br>
+            2021-03-21 20:39:08Z - uTorrent v.3.5.5.45852<br><br>
+            
+            Файлы в системе:<br>
+            r/r 205772-128-3: Users/Kamryn/AppData/Roaming/uTorrent/uTorrent.exe<br>
+            r/r 97182-128-4: Users/Kamryn/Desktop/uTorrent.exe
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>4.2. .torrent файлы</h4>
+        <table>
+            <tr>
+                <th>Файл</th>
+                <th>Расположение</th>
+                <th>MD5 хэш</th>
+            </tr>
+            <tr>
+                <td>Contraband.mp3.torrent</td>
+                <td>AppData/Roaming/uTorrent<br>Downloads/Torrents</td>
+                <td>f140d5444122472342222953450e36d</td>
+            </tr>
+            <tr>
+                <td>Sample-1.mp3.torrent</td>
+                <td>AppData/Roaming/uTorrent<br>Downloads/Torrents</td>
+                <td>8ac86f7a2151250bc4033fde9e23456f</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="subsection">
+        <h4>4.3. Файлы резюме загрузок</h4>
+        <div class="evidence-box">
+            Обнаружены файлы resume.dat:<br>
+            r/r 85683-128-4: Users/Kamryn/AppData/Roaming/uTorrent/resume.dat<br>
+            r/r 88459-128-4: Users/Kamryn/AppData/Roaming/uTorrent/resume.dat.old<br>
+            (и несколько backup копий)
+        </div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+    <h3>5. ЦЕЛЕВЫЕ МЕДИАФАЙЛЫ</h3>
+    
+    <div class="subsection">
+        <h4>5.1. Sample-1.mp3</h4>
+        <div class="evidence-box">
+            <span class="finding-critical">МЕТАДАННЫЕ:</span><br>
+            Title: New_Movie_Sample-1<br>
+            Publisher: Beat Step<br>
+            Year: 2021<br>
+            Comment: Sample to be presented at upcoming meeting<br>
+            Duration: 3.77 s (approx)<br><br>
+            
+            <span class="finding-critical">РАСПОЛОЖЕНИЕ:</span><br>
+            C:\Users\Kamryn\Downloads\Sample-1.mp3<br>
+            C:\Users\Kamryn\Downloads\Torrent-Sources\Sample-1.mp3<br><br>
+            
+            <span class="finding-critical">ХЭШ MD5:</span> b387e8334b3db03d604cfa14511f6913 (совпадает с эталоном)
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>5.2. Contraband.mp3</h4>
+        <div class="evidence-box">
+            <span class="finding-important">МЕТАДАННЫЕ:</span><br>
+            Название указывает на нелегальный характер ("Контрабанда")<br>
+            Duration: 1.85 s (approx)<br><br>
+            
+            <span class="finding-important">РАСПОЛОЖЕНИЕ:</span><br>
+            C:\Users\Kamryn\Downloads\Torrent-Sources\Contraband.mp3<br><br>
+            
+            <span class="finding-important">ХЭШ MD5:</span> f9d82438ed446e43cbd06adf7dbc875b (совпадает с эталоном)
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>6. АНАЛИЗ АКТИВНОСТИ ПОЛЬЗОВАТЕЛЯ</h3>
+    
+    <div class="subsection">
+        <h4>6.1. Недавно открытые файлы (RecentDocs)</h4>
+        <div class="evidence-box">
+            RecentDocs Key LastWrite: 2021-03-27 14:25:45Z<br><br>
+            
+            Обнаруженные файлы в порядке MRU:<br>
+            19 = Contraband.mp3<br>
+            18 = ID-20210327.raw<br>
+            17 = Contraband.mp3.torrent<br>
+            14 = ID-20210321.raw<br>
+            12 = Sample-1.mp3.torrent<br>
+            10 = Sample-1.mp3<br>
+            ... и другие связанные файлы
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>6.2. Временная шкала событий</h4>
+        <div class="timeline">
+            <div class="timeline-event">
+                <strong>2021-03-10 00:13:56</strong> - Создана учетная запись Kamryn
+            </div>
+            <div class="timeline-event">
+                <strong>2021-03-21 20:25:45</strong> - Работа с файлами List-1.txt, List-2.txt (списки трекеров)
+            </div>
+            <div class="timeline-event">
+                <strong>2021-03-21 20:39:08</strong> - Установлен uTorrent v.3.5.5.45852
+            </div>
+            <div class="timeline-event">
+                <strong>2021-03-21 20:40:15</strong> - Появление Sample-1.mp3 в системе
+            </div>
+            <div class="timeline-event">
+                <strong>2021-03-27 14:10:00</strong> - Активность с Contraband.mp3.torrent
+            </div>
+            <div class="timeline-event">
+                <strong>2021-03-27 14:13:44</strong> - Создание файла Contraband.mp3
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+    <h3>7. ДОКАЗАТЕЛЬСТВА УТЕЧКИ ЧЕРЕЗ E-MAIL</h3>
+    
+    <div class="subsection">
+        <h4>7.1. Анализ Thunderbird</h4>
+        <div class="evidence-box">
+            <span class="finding-critical">ВХОДЯЩЕЕ ПИСЬМО:</span><br>
+            От: willis.gibbs@outlook.com<br>
+            Кому: camille123@outlook.com<br>
+            Дата: Sun, 21 Mar 2021 19:22:40<br>
+            Тема: Try this one!<br><br>
+            
+            <span class="finding-critical">ТЕКСТ ПИСЬМА:</span><br>
+            "Like we discussed at work, here's a copy of the music file we're going to present 
+            to the people at Tuesday's meeting. They really did a good job with this one, 
+            so I'm hoping they go with us!"<br><br>
+            
+            <span class="finding-critical">ВЛОЖЕНИЕ:</span> Sample-1.mp3 (80 KB)
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>7.2. Исходящая переписка</h4>
+        <div class="evidence-box">
+            Обнаружены ответы от Kamryn:<br>
+            - Re: Try this one!<br>
+            - Re: Here's Another One<br>
+            - Check these files out!<br><br>
+            
+            Подтверждает активное участие в пересылке файлов
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h3>8. ВЕБ-АКТИВНОСТЬ</h3>
+    
+    <div class="subsection">
+        <h4>8.1. История загрузок (Edge Browser)</h4>
+        <div class="evidence-box">
+            Обнаружены в базе History:<br>
+            - Загрузка Thunderbird Setup 78.8.1.exe<br>
+            - Загрузка uTorrent.exe<br>
+            - Посещение торрент-трекеров<br>
+            - Загрузка обоев wallpaperflare.com_wallpaper.jpg
+        </div>
+    </div>
+
+    <div class="subsection">
+        <h4>8.2. Списки трекеров</h4>
+        <div class="evidence-box">
+            Файлы List-1.txt, List-2.txt, List-3.txt содержат URL трекеров:<br>
+            udp://208.83.20.20:6969/announce<br>
+            udp://191.216.110.52:451/announce<br>
+            udp://5.206.31.154:6969/announce<br>
+            ... и другие
+        </div>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<div class="section">
+    <h3>9. ЗАКЛЮЧЕНИЕ И РЕКОМЕНДАЦИИ</h3>
+    
+    <div class="conclusion-box">
+        <h4>9.1. Основные выводы</h4>
+        <p><span class="finding-critical">КРИТИЧЕСКОЕ НАРУШЕНИЕ:</span> Пользователь Kamryn осуществлял несанкционированную загрузку и распространение конфиденциальных материалов, что привело к утечке интеллектуальной собственности.</p>
+        
+        <p><span class="finding-important">УСТАНОВЛЕННЫЕ ФАКТЫ:</span></p>
+        <ul>
+            <li>Установка и использование P2P-клиента uTorrent без разрешения</li>
+            <li>Загрузка предрелизного контента (Sample-1.mp3) с метаданными, указывающими на коммерческую тайну</li>
+            <li>Пересылка конфиденциального файла внешнему адресату через электронную почту</li>
+            <li>Систематический поиск торрент-трекеров и загрузка дополнительного контента</li>
+            <li>Сокрытие активности (файлы в AppData, резервные копии resume.dat)</li>
+        </ul>
+    </div>
+
+    <div class="subsection">
+        <h4>9.2. Рекомендации</h4>
+        <ol>
+            <li><strong>Немедленные действия:</strong> Блокировка учетной записи пользователя, изъятие оборудования</li>
+            <li><strong>Технические меры:</strong> Блокировка P2P-трафика на корпоративном firewall, установка DLP-системы</li>
+            <li><strong>Организационные меры:</strong> Пересмотр политик информационной безопасности, проведение обучения сотрудников</li>
+            <li><strong>Юридические действия:</strong> Консультация с юридическим отделом о возможных последствиях утечки</li>
+            <li><strong>Мониторинг:</strong> Усиление мониторинга сетевой активности для выявления подобных инцидентов</li>
+        </ol>
+    </div>
+</div>
+
+<div class="footer">
+    Отчет сделан студентом СИБ-47 Бердибаев Коркем | Digital Forensics Lab - P2P Leakage<br>
+<div>
+
+</div>
+
+</body>
+</html>
